@@ -51,14 +51,13 @@ namespace Chip_Chess_Engine
         }
         private void panel1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_dragging) {
-                Point dif = Point.Subtract(Cursor.Position, new Size(_dragCursorPoint));
-                Location = Point.Add(_dragFormPoint, new Size(dif));
-                if (MousePosition.Y == 0) {
-                    WindowState = FormWindowState.Maximized;
-                    _boardSize = 80;
-                    Refresh();
-                }
+            if (!_dragging) return;
+            Point dif = Point.Subtract(Cursor.Position, new Size(_dragCursorPoint));
+            Location = Point.Add(_dragFormPoint, new Size(dif));
+            if (MousePosition.Y == 0) {
+                WindowState = FormWindowState.Maximized;
+                _boardSize = 80;
+                Refresh();
             }
         }
         private void panel1_MouseUp(object sender, MouseEventArgs e) => _dragging = false;
@@ -84,13 +83,13 @@ namespace Chip_Chess_Engine
                 {
                     _graphics = this.CreateGraphics();
                     _graphics.FillRectangle(_brush1, new Rectangle(x * _boardSize + 40, y * _boardSize + 70, _boardSize, _boardSize));
-                    _squares[y][x] = new Rectangle(x * _boardSize + 40, y * _boardSize + 70, _boardSize, _boardSize);
+                    //_squares[y][x] = new Rectangle(x * _boardSize + 40, y * _boardSize + 70, _boardSize, _boardSize);
                     
                     x++;
                     
                     _graphics = this.CreateGraphics();
                     _graphics.FillRectangle(_brush2, new Rectangle(x * _boardSize + 40, y * _boardSize + 70, _boardSize, _boardSize));
-                    _squares[y][x] = new Rectangle(x * _boardSize + 40, y * _boardSize + 70, _boardSize, _boardSize);
+                    //_squares[y][x] = new Rectangle(x * _boardSize + 40, y * _boardSize + 70, _boardSize, _boardSize);
                     
                 }
 
@@ -122,17 +121,30 @@ namespace Chip_Chess_Engine
 
         private void fullScrn_Click(object sender, EventArgs e)
         {
-            if (WindowState == FormWindowState.Maximized) {
-                WindowState = FormWindowState.Normal;
-                _boardSize = 50;
+            switch (WindowState)
+            {
+                case FormWindowState.Maximized:
+                    WindowState = FormWindowState.Normal;
+                    _boardSize = 50;
+                    break;
+                case FormWindowState.Normal:
+                    WindowState = FormWindowState.Maximized;
+                    _boardSize = 80;
+                    break;
             }
-            else if (WindowState == FormWindowState.Normal) {
-                WindowState = FormWindowState.Maximized;
-                _boardSize = 80;
-            }
+
+            settings.Location = new Point(Right-134, settings.Location.Y);
+            settingsButton.Location = new Point(Right-67, settingsButton.Location.Y);
+            
             Refresh();
         }
 
         private void min_Click(object sender, EventArgs e) => WindowState = FormWindowState.Minimized;
+
+        private void settingsButton_Click(object sender, EventArgs e)
+        {
+            if (settings.Visible) settings.Hide();
+            else settings.Show();
+        }
     }
 }

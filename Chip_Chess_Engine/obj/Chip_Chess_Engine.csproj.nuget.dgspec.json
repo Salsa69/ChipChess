@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mitch\\RiderProjects\\Chip_Chess_Engine\\Chip_Chess_Engine\\Chip_Chess_Engine.csproj": {}
+    "C:\\Users\\mitch\\Documents\\GitHub\\ChipChess\\Chip_Chess_Engine\\Chip_Chess_Engine.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mitch\\RiderProjects\\Chip_Chess_Engine\\Chip_Chess_Engine\\Chip_Chess_Engine.csproj": {
+    "C:\\Users\\mitch\\Documents\\GitHub\\ChipChess\\Chip_Chess_Engine\\Chip_Chess_Engine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mitch\\RiderProjects\\Chip_Chess_Engine\\Chip_Chess_Engine\\Chip_Chess_Engine.csproj",
+        "projectUniqueName": "C:\\Users\\mitch\\Documents\\GitHub\\ChipChess\\Chip_Chess_Engine\\Chip_Chess_Engine.csproj",
         "projectName": "Chip_Chess_Engine",
-        "projectPath": "C:\\Users\\mitch\\RiderProjects\\Chip_Chess_Engine\\Chip_Chess_Engine\\Chip_Chess_Engine.csproj",
+        "projectPath": "C:\\Users\\mitch\\Documents\\GitHub\\ChipChess\\Chip_Chess_Engine\\Chip_Chess_Engine.csproj",
         "packagesPath": "C:\\Users\\mitch\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mitch\\RiderProjects\\Chip_Chess_Engine\\Chip_Chess_Engine\\obj\\",
+        "outputPath": "C:\\Users\\mitch\\Documents\\GitHub\\ChipChess\\Chip_Chess_Engine\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\mitch\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -57,7 +57,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.102\\RuntimeIdentifierGraph.json"
         }
       }
     }
