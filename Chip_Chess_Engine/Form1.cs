@@ -20,14 +20,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
-public struct Piece
-{
-    public short id;
-    public Image Image;
-}
-
 namespace Chip_Chess_Engine
 {
+    
     public partial class Form1 : Form
     {
         #region Loading piece images to memory
@@ -42,7 +37,7 @@ namespace Chip_Chess_Engine
         private static readonly Image rook_black   = new Bitmap("assets/rook_black.png");
         
         //white pieces
-        private static readonly Image pawn_white   = new Bitmap("assets/pawn_black.png");
+        private static readonly Image pawn_white   = new Bitmap("assets/pawn_white.png");
         private static readonly Image bishop_white = new Bitmap("assets/bishop_white.png");
         private static readonly Image knight_white = new Bitmap("assets/knight_white.png");
         private static readonly Image queen_white  = new Bitmap("assets/queen_white.png");
@@ -67,12 +62,39 @@ namespace Chip_Chess_Engine
          *
          */
 
-        // Constructor for "Piece" type
-        public static Piece NewPiece(Int16 id)
+        
+        private readonly SolidBrush _brush1 = new(Color.LightSalmon);
+        private readonly SolidBrush _brush2 = new(Color.Chocolate);
+        private Graphics _graphics;
+        private int _boardSize = 50;
+
+        private static Rectangle[][] _squares =
         {
-            Piece newPiece;
-            newPiece.id = id;
-            newPiece.Image = id switch
+            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
+            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
+            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
+            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
+            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
+            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
+            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
+            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
+        };
+
+        private static short[][] _coords =
+        {
+            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
+            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
+            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
+            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
+            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
+            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
+            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
+            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
+        };
+
+        private Image _getImageById(short id)
+        {
+            return id switch
             {
                 1 => pawn_white,
                 2 => rook_white,
@@ -90,25 +112,7 @@ namespace Chip_Chess_Engine
                 
                 _ => blank_image
             };
-            return newPiece;
         }
-        
-        private readonly SolidBrush _brush1 = new(Color.LightSalmon);
-        private readonly SolidBrush _brush2 = new(Color.Chocolate);
-        private Graphics _graphics;
-        private int _boardSize = 50;
-
-        private static Rectangle[][] _squares =
-        {
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new (),},
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new (),},
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new (),},
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new (),},
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new (),},
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new (),},
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new (),},
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new (),},
-        };
         
         #region Window Move
         
@@ -159,6 +163,14 @@ namespace Chip_Chess_Engine
         {
             base.OnPaint(e);
             BuildGrid();
+            for (var y = 0; y < 8; y++)
+            {
+                for (var x = 0; x < 8; x++)
+                {
+                    _graphics.DrawImage(_getImageById(_coords[y][x]), _squares[y][x]);
+                }
+            }
+
         }
         
         private void BuildGrid()
@@ -183,7 +195,7 @@ namespace Chip_Chess_Engine
 
                 y++;
                 
-                for (int x = 0; x < 8; x++)
+                for (var x = 0; x < 8; x++)
                 {
                     tempRect = new Rectangle(x * _boardSize + 40, y * _boardSize + 70, _boardSize, _boardSize);
                     _graphics.FillRectangle(_brush2, tempRect);
@@ -199,9 +211,9 @@ namespace Chip_Chess_Engine
             }
         }
 
-        private void PlacePieces()
+        private static void PlacePieces()
         {
-            short id;
+            short id = 0;
             for (short y = 0; y < 8; y++) { 
                 for (short x = 0; x < 8; x++) {
                     switch (y)
@@ -220,9 +232,12 @@ namespace Chip_Chess_Engine
                         case 6:
                             id = -1;
                             break;
-                            
-                        default: break;
+                        default:
+                            id = 0;
+                            break;
                     }
+
+                    _coords[y][x] = id;
                 }
             }
         }
