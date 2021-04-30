@@ -1,6 +1,6 @@
 ﻿namespace Chip_Chess_Engine
 {
-    partial class Form1
+    sealed partial class Form1
     {
         /// <summary>
         ///  Required designer variable.
