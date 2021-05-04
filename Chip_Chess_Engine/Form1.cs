@@ -83,20 +83,8 @@ namespace Chip_Chess_Engine
             -2, -3, -4, -5, -6, -4, -3, -2
         };
 
-        private SolidBrush GetBrush(int n)
-        {
-            var x = n % 8;
-            var y = (int) (n / 8);
-            if (x % 2 == 0)
-            {
-                
-            }
-            else
-            {
-                
-            }
-            return _brush1;
-        }
+        private SolidBrush GetBrush(int n) => (((int) (n / 8)) % 2 == 0 ? 2 - Convert.ToInt16((n % 8) % 2 == 0) : 1 + Convert.ToInt16((n % 8) % 2 == 0)) == 1 ? _brush1 : _brush2;
+        
         
         private static Image GetImageById(short id) 
         {
@@ -170,11 +158,9 @@ namespace Chip_Chess_Engine
             Refresh();
         }
 
-        private int GetPosFromPoint(Point p) =>  
+        private int GetPosFromPoint(Point p) =>
             8 * ((int) ((p.Y - Location.Y - 70) / _boardSize)) +
             ((int) ((p.X - Location.X - 40) / _boardSize));
-
-        private int _drawCount = 1;
         
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -195,8 +181,8 @@ namespace Chip_Chess_Engine
 
         private void DrawSquare(int x, int y)
         {
-            
-            _graphics.FillRectangle(_squareColors[8 * y + x] == 1 ? _brush1 : _brush2,
+            SolidBrush tempBrush = GetBrush(8*y+x);
+            _graphics.FillRectangle(tempBrush,
                 new Rectangle(x * _boardSize + 40, y * _boardSize + 70, _boardSize, _boardSize));
             _graphics.DrawImage(GetImageById(_coords[8*y+x]), _squares[8*y+x]);
         }
