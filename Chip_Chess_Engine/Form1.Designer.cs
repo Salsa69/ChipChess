@@ -33,8 +33,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.min = new System.Windows.Forms.Button();
             this.fullScrn = new System.Windows.Forms.Button();
-            this.settings = new System.Windows.Forms.Panel();
-            this.settingsButton = new System.Windows.Forms.Button();
+            this.drawCounter = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -102,30 +101,13 @@
             this.fullScrn.UseVisualStyleBackColor = true;
             this.fullScrn.Click += new System.EventHandler(this.fullScrn_Click);
             // 
-            // settings
+            // drawCounter
             // 
-            this.settings.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (25)))), ((int) (((byte) (25)))), ((int) (((byte) (25)))));
-            this.settings.Location = new System.Drawing.Point(466, 60);
-            this.settings.Name = "settings";
-            this.settings.Size = new System.Drawing.Size(123, 197);
-            this.settings.TabIndex = 2;
-            this.settings.Visible = false;
-            // 
-            // settingsButton
-            // 
-            this.settingsButton.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (25)))), ((int) (((byte) (25)))), ((int) (((byte) (25)))));
-            this.settingsButton.FlatAppearance.BorderSize = 0;
-            this.settingsButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int) (((byte) (39)))), ((int) (((byte) (41)))), ((int) (((byte) (43)))));
-            this.settingsButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int) (((byte) (39)))), ((int) (((byte) (41)))), ((int) (((byte) (43)))));
-            this.settingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.settingsButton.ForeColor = System.Drawing.Color.White;
-            this.settingsButton.Location = new System.Drawing.Point(533, 62);
-            this.settingsButton.Name = "settingsButton";
-            this.settingsButton.Size = new System.Drawing.Size(55, 23);
-            this.settingsButton.TabIndex = 3;
-            this.settingsButton.Text = "Settings";
-            this.settingsButton.UseVisualStyleBackColor = false;
-            this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
+            this.drawCounter.ForeColor = System.Drawing.Color.White;
+            this.drawCounter.Location = new System.Drawing.Point(505, 314);
+            this.drawCounter.Name = "drawCounter";
+            this.drawCounter.Size = new System.Drawing.Size(69, 23);
+            this.drawCounter.TabIndex = 2;
             // 
             // Form1
             // 
@@ -133,19 +115,19 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int) (((byte) (31)))), ((int) (((byte) (31)))), ((int) (((byte) (31)))));
             this.ClientSize = new System.Drawing.Size(600, 440);
-            this.Controls.Add(this.settingsButton);
-            this.Controls.Add(this.settings);
+            this.Controls.Add(this.drawCounter);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Form1";
             this.Text = "Form1";
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.form_MouseDown);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.form_MouseUp);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.form_MouseMove);
         }
 
-        private System.Windows.Forms.Button settingsButton;
-
-        private System.Windows.Forms.Panel settings;
+        private System.Windows.Forms.Label drawCounter;
 
         private System.Windows.Forms.Button min;
         private System.Windows.Forms.Button fullScrn;

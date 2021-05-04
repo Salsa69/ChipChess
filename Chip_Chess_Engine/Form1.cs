@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
@@ -22,78 +23,85 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Chip_Chess_Engine
 {
-    
+
     public partial class Form1 : Form
     {
         #region Loading piece images to memory
-        
+
         // ReSharper disable InconsistentNaming
         // black pieces
-        private static readonly Image pawn_black   = new Bitmap("assets/pawn_black.png");
+        private static readonly Image pawn_black = new Bitmap("assets/pawn_black.png");
         private static readonly Image bishop_black = new Bitmap("assets/bishop_black.png");
         private static readonly Image knight_black = new Bitmap("assets/knight_black.png");
-        private static readonly Image queen_black  = new Bitmap("assets/queen_black.png");
-        private static readonly Image king_black   = new Bitmap("assets/king_black.png");
-        private static readonly Image rook_black   = new Bitmap("assets/rook_black.png");
-        
+        private static readonly Image queen_black = new Bitmap("assets/queen_black.png");
+        private static readonly Image king_black = new Bitmap("assets/king_black.png");
+        private static readonly Image rook_black = new Bitmap("assets/rook_black.png");
+
         //white pieces
-        private static readonly Image pawn_white   = new Bitmap("assets/pawn_white.png");
+        private static readonly Image pawn_white = new Bitmap("assets/pawn_white.png");
         private static readonly Image bishop_white = new Bitmap("assets/bishop_white.png");
         private static readonly Image knight_white = new Bitmap("assets/knight_white.png");
-        private static readonly Image queen_white  = new Bitmap("assets/queen_white.png");
-        private static readonly Image king_white   = new Bitmap("assets/king_white.png");
-        private static readonly Image rook_white   = new Bitmap("assets/rook_white.png");
+        private static readonly Image queen_white = new Bitmap("assets/queen_white.png");
+        private static readonly Image king_white = new Bitmap("assets/king_white.png");
+        private static readonly Image rook_white = new Bitmap("assets/rook_white.png");
 
-        private static readonly Image blank_image = new Bitmap(16, 16);
+        private static readonly Image blank_image = new Bitmap(1,1);
         // ReSharper restore InconsistentNaming
-        
+
         #endregion
 
-        /*
-         * All positive ID's are for white pieces
-         * All negative ID's are for black pieces
-         *
-         * 1 = pawn
-         * 2 = rook
-         * 3 = bishop
-         * 4 = knight
-         * 5 = queen
-         * 6 = king
-         *
-         */
-
-        
-        private readonly SolidBrush _brush1 = new(Color.LightSalmon);
-        private readonly SolidBrush _brush2 = new(Color.Chocolate);
+        private readonly SolidBrush _brush1 = new(Color.CadetBlue);
+        private readonly SolidBrush _brush2 = new(Color.DarkSlateGray);
         private Graphics _graphics;
         private int _boardSize = 50;
 
-        private static Rectangle[][] _squares =
+        public int  ScreenWidth = Screen.PrimaryScreen.WorkingArea.Width;
+        public int ScreenHeight = Screen.PrimaryScreen.WorkingArea.Height;
+
+        private static Rectangle[] _squares =
         {
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
-            new Rectangle[] {new (),new (),new (),new (),new (),new (),new (),new ()},
+            new(), new(), new(), new(), new(), new(), new(), new(),
+            new(), new(), new(), new(), new(), new(), new(), new(),
+            new(), new(), new(), new(), new(), new(), new(), new(),
+            new(), new(), new(), new(), new(), new(), new(), new(),
+            new(), new(), new(), new(), new(), new(), new(), new(),
+            new(), new(), new(), new(), new(), new(), new(), new(),
+            new(), new(), new(), new(), new(), new(), new(), new(),
+            new(), new(), new(), new(), new(), new(), new(), new()
+        };
+        
+
+        private static short[] _coords = // Initialized like a chess board
+        {
+             2,  3,  4,  5,  6,  4,  3,  2,
+             1,  1,  1,  1,  1,  1,  1,  1,
+             0,  0,  0,  0,  0,  0,  0,  0,
+             0,  0,  0,  0,  0,  0,  0,  0,
+             0,  0,  0,  0,  0,  0,  0,  0,
+             0,  0,  0,  0,  0,  0,  0,  0,
+            -1, -1, -1, -1, -1, -1, -1, -1,
+            -2, -3, -4, -5, -6, -4, -3, -2
         };
 
-        private static short[][] _coords =
+        private SolidBrush GetBrush(int n)
         {
-            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
-            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
-            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
-            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
-            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
-            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
-            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
-            new short[] {new(), new(), new(), new(), new(), new(), new(), new()},
-        };
-
-        private Image _getImageById(short id)
+            var x = n % 8;
+            var y = (int) (n / 8);
+            if (x % 2 == 0)
+            {
+                
+            }
+            else
+            {
+                
+            }
+            return _brush1;
+        }
+        
+        private static Image GetImageById(short id) 
         {
+            // Negative ID's are black, positive ID's are white
+            // pawn = 1, rook = 2, knight = 3, bishop = 4, queen = 5, king = 6
             return id switch
             {
                 1 => pawn_white,
@@ -105,10 +113,10 @@ namespace Chip_Chess_Engine
                 
                 -1 => pawn_black,
                 -2 => rook_black,
-                -3 => king_black,
-                -4 => bishop_white,
+                -3 => knight_black,
+                -4 => bishop_black,
                 -5 => queen_black,
-                -6 => knight_black,
+                -6 => king_black,
                 
                 _ => blank_image
             };
@@ -138,12 +146,11 @@ namespace Chip_Chess_Engine
         private void panel1_MouseMove(object sender, MouseEventArgs e)
         {
             if (!_dragging) return;
-            Point dif = Point.Subtract(Cursor.Position, new Size(_dragCursorPoint));
-            Location = Point.Add(_dragFormPoint, new Size(dif));
+            Location = Point.Add(_dragFormPoint, 
+                new Size(Point.Subtract(Cursor.Position, new Size(_dragCursorPoint))));
             if (MousePosition.Y == 0) {
                 WindowState = FormWindowState.Maximized;
                 _boardSize = 80;
-                Refresh();
             }
         }
         
@@ -154,23 +161,44 @@ namespace Chip_Chess_Engine
         public Form1()
         {
             InitializeComponent();
+            
             BuildGrid();
-            PlacePieces();
+            for (var i = 0; i < 64; i++)
+            {
+                _graphics.DrawImage(GetImageById(_coords[i]), _squares[i]);
+            }
             Refresh();
         }
 
+        private int GetPosFromPoint(Point p) =>  
+            8 * ((int) ((p.Y - Location.Y - 70) / _boardSize)) +
+            ((int) ((p.X - Location.X - 40) / _boardSize));
+
+        private int _drawCount = 1;
+        
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            BuildGrid();
-            for (var y = 0; y < 8; y++)
-            {
-                for (var x = 0; x < 8; x++)
-                {
-                    _graphics.DrawImage(_getImageById(_coords[y][x]), _squares[y][x]);
-                }
-            }
 
+            DrawScreen();
+        }
+
+        private void DrawScreen()
+        {
+            BuildGrid();
+            
+            for (var i = 0; i < 64; i++)
+            {
+                _graphics.DrawImage(GetImageById(_coords[i]), _squares[i]);
+            }
+        }
+
+        private void DrawSquare(int x, int y)
+        {
+            
+            _graphics.FillRectangle(_squareColors[8 * y + x] == 1 ? _brush1 : _brush2,
+                new Rectangle(x * _boardSize + 40, y * _boardSize + 70, _boardSize, _boardSize));
+            _graphics.DrawImage(GetImageById(_coords[8*y+x]), _squares[8*y+x]);
         }
         
         private void BuildGrid()
@@ -183,13 +211,13 @@ namespace Chip_Chess_Engine
                 {
                     tempRect = new Rectangle(x * _boardSize + 40, y * _boardSize + 70, _boardSize, _boardSize);
                     _graphics.FillRectangle(_brush1, tempRect);
-                    _squares[y][x] = tempRect;
+                    _squares[8*y+x] = tempRect;
                     
                     x++;
 
                     tempRect = new Rectangle(x * _boardSize + 40, y * _boardSize + 70, _boardSize, _boardSize);
                     _graphics.FillRectangle(_brush2, tempRect);
-                    _squares[y][x] = tempRect;
+                    _squares[8*y+x] = tempRect;
                     
                 }
 
@@ -199,45 +227,14 @@ namespace Chip_Chess_Engine
                 {
                     tempRect = new Rectangle(x * _boardSize + 40, y * _boardSize + 70, _boardSize, _boardSize);
                     _graphics.FillRectangle(_brush2, tempRect);
-                    _squares[y][x] = tempRect;
+                    _squares[8*y+x] = tempRect;
 
                     x++;
 
                     tempRect = new Rectangle(x * _boardSize + 40, y * _boardSize + 70, _boardSize, _boardSize);
                     _graphics.FillRectangle(_brush1, tempRect);
-                    _squares[y][x] = tempRect;
+                    _squares[8*y+x] = tempRect;
 
-                }
-            }
-        }
-
-        private static void PlacePieces()
-        {
-            short id = 0;
-            for (short y = 0; y < 8; y++) { 
-                for (short x = 0; x < 8; x++) {
-                    switch (y)
-                    {
-                        case 0: //top row
-                            if (x < 4) id = (short) (x + 2);
-                            else id = (short) ((-1)*x + 9);
-                            break;
-                        case 7: //bottom row
-                            if (x < 4) id = (short) (-1*(x + 2));
-                            else id = (short) (-1*((-1) * x + 9));
-                            break;
-                        case 1:
-                            id = 1;
-                            break;
-                        case 6:
-                            id = -1;
-                            break;
-                        default:
-                            id = 0;
-                            break;
-                    }
-
-                    _coords[y][x] = id;
                 }
             }
         }
@@ -257,19 +254,34 @@ namespace Chip_Chess_Engine
                     _boardSize = 80;
                     break;
             }
-
-            settings.Location = new Point(Right-146, settings.Location.Y);
-            settingsButton.Location = new Point(Right-69, settingsButton.Location.Y);
             
             Refresh();
         }
 
+        private void form_MouseDown(object sender, EventArgs e)
+        {
+            Point pos = Cursor.Position;
+            if (pos.X < (8 * _boardSize + Location.X + 40) &&
+                pos.X > (Location.X + 40) &&
+                pos.Y < (8 * _boardSize + Location.Y + 70) &&
+                pos.Y > (Location.Y + 70)) 
+            {
+                _coords[GetPosFromPoint(pos)] = 0;
+                DrawSquare(GetPosFromPoint(pos) % 8, (int) (GetPosFromPoint(pos) / 8));
+            }
+        }
+
+        private void form_MouseUp(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void form_MouseMove(object sender, EventArgs e)
+        {
+            
+        }
+        
         private void min_Click(object sender, EventArgs e) => WindowState = FormWindowState.Minimized;
 
-        private void settingsButton_Click(object sender, EventArgs e)
-        {
-            if (settings.Visible) settings.Hide();
-            else settings.Show();
-        }
     }
 }
