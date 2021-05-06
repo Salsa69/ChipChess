@@ -52,6 +52,7 @@ namespace Chip_Chess_Engine
 
         private readonly SolidBrush _brush1 = new(Color.CadetBlue);
         private readonly SolidBrush _brush2 = new(Color.DarkSlateGray);
+        private readonly SolidBrush _transparencyBrush = new(Color.Transparent);
         private Graphics _graphics;
         private int _boardSize = 50;
 
@@ -83,7 +84,8 @@ namespace Chip_Chess_Engine
             -2, -3, -4, -5, -6, -4, -3, -2
         };
 
-        private SolidBrush GetBrush(int n) => (((int) (n / 8)) % 2 == 0 ? 2 - Convert.ToInt16((n % 8) % 2 == 0) : 1 + Convert.ToInt16((n % 8) % 2 == 0)) == 1 ? _brush1 : _brush2;
+        private SolidBrush GetBrush(int n) => 
+            (((int) (n / 8)) % 2 == 0 ? 2 - Convert.ToInt16((n % 8) % 2 == 0) : 1 + Convert.ToInt16((n % 8) % 2 == 0)) == 1 ? _brush1 : _brush2;
         
         
         private static Image GetImageById(short id) 
@@ -161,6 +163,14 @@ namespace Chip_Chess_Engine
         private int GetPosFromPoint(Point p) =>
             8 * ((int) ((p.Y - Location.Y - 70) / _boardSize)) +
             ((int) ((p.X - Location.X - 40) / _boardSize));
+
+        private void DrawPieces()
+        {
+            for (var i = 0; i < 64; i++)
+            {
+                _graphics.DrawImage(GetImageById(_coords[i]), _squares[i]);
+            }
+        }
         
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -173,18 +183,16 @@ namespace Chip_Chess_Engine
         {
             BuildGrid();
             
-            for (var i = 0; i < 64; i++)
-            {
-                _graphics.DrawImage(GetImageById(_coords[i]), _squares[i]);
-            }
+            DrawPieces();
         }
 
-        private void DrawSquare(int x, int y)
+        private void DrawSquare(int n)
         {
-            SolidBrush tempBrush = GetBrush(8*y+x);
+            if (n < 0 || n > 63) return;
+            SolidBrush tempBrush = GetBrush(n);
             _graphics.FillRectangle(tempBrush,
-                new Rectangle(x * _boardSize + 40, y * _boardSize + 70, _boardSize, _boardSize));
-            _graphics.DrawImage(GetImageById(_coords[8*y+x]), _squares[8*y+x]);
+                new Rectangle((n % 8) * _boardSize + 40, ((int) (n / 8)) * _boardSize + 70, _boardSize, _boardSize));
+            _graphics.DrawImage(GetImageById(_coords[n]), _squares[n]);
         }
         
         private void BuildGrid()
@@ -244,27 +252,50 @@ namespace Chip_Chess_Engine
             Refresh();
         }
 
+        // All variables for dragging a piece are reused from the
+        // window dragging because you probably cannot do both at the same time
+        private Rectangle _dragRect;
+        private Image _dragPiece;
+        
         private void form_MouseDown(object sender, EventArgs e)
         {
             Point pos = Cursor.Position;
             if (pos.X < (8 * _boardSize + Location.X + 40) &&
                 pos.X > (Location.X + 40) &&
                 pos.Y < (8 * _boardSize + Location.Y + 70) &&
-                pos.Y > (Location.Y + 70)) 
+                pos.Y > (Location.Y + 70))
             {
-                _coords[GetPosFromPoint(pos)] = 0;
-                DrawSquare(GetPosFromPoint(pos) % 8, (int) (GetPosFromPoint(pos) / 8));
+                int coord = GetPosFromPoint(pos);
+                DrawSquare(coord);
+                _dragRect = _squares[coord];
+                _dragPiece = GetImageById(_coords[coord]);
+                _dragging = true;
+                _dragCursorPoint = Cursor.Position;
+                _dragFormPoint = _dragRect.Location;
             }
         }
 
         private void form_MouseUp(object sender, EventArgs e)
         {
-            
+            _dragging = false;
+            DrawScreen();
         }
-
+            
+        
         private void form_MouseMove(object sender, EventArgs e)
         {
-            
+            if (!_dragging) return;
+            Point newPoint = Point.Add(_dragFormPoint,
+                new Size(Point.Subtract(Cursor.Position, new Size(_dragCursorPoint))));
+            if (newPoint.X < (7 * _boardSize + 40) &&
+                newPoint.X > 40 &&
+                newPoint.Y < (8 * _boardSize + 70) &&
+                newPoint.Y > 70)
+            {
+                _dragRect.Location = newPoint;
+            }
+            DrawScreen();
+            _graphics.DrawImage(_dragPiece, _dragRect);
         }
         
         private void min_Click(object sender, EventArgs e) => WindowState = FormWindowState.Minimized;
