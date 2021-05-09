@@ -59,19 +59,8 @@ namespace Chip_Chess_Engine
         public int  ScreenWidth = Screen.PrimaryScreen.WorkingArea.Width;
         public int ScreenHeight = Screen.PrimaryScreen.WorkingArea.Height;
 
-        private static Rectangle[] _squares =
-        {
-            new(), new(), new(), new(), new(), new(), new(), new(),
-            new(), new(), new(), new(), new(), new(), new(), new(),
-            new(), new(), new(), new(), new(), new(), new(), new(),
-            new(), new(), new(), new(), new(), new(), new(), new(),
-            new(), new(), new(), new(), new(), new(), new(), new(),
-            new(), new(), new(), new(), new(), new(), new(), new(),
-            new(), new(), new(), new(), new(), new(), new(), new(),
-            new(), new(), new(), new(), new(), new(), new(), new()
-        };
+        private static Rectangle[] _squares = new Rectangle[64];
         
-
         private static short[] _coords = // Initialized like a chess board
         {
              2,  3,  4,  5,  6,  4,  3,  2,
@@ -294,6 +283,7 @@ namespace Chip_Chess_Engine
             {
                 _dragRect.Location = newPoint;
             }
+
             DrawScreen();
             _graphics.DrawImage(_dragPiece, _dragRect);
         }
